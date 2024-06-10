@@ -28,7 +28,7 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
 
 	fmt.Println("Metrics Collection Server started in pull mode at http://localhost:9301/metrics")
-	http.ListenAndServe(":9301", nil)
+	http.ListenAndServe(":5000", nil)
 
 	// if *mode == "pull" {
 	// 	// Pull mode: expose metrics for scraping by Prometheus
