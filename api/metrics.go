@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"fmt"
@@ -8,24 +8,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-)
-
-var (
-	cpuUsage = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "cpu_usage",
-		Help: "CPU usage percentage",
-	})
-	memoryUsage = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "memory_usage",
-		Help: "Memory usage percentage",
-	})
+	"github.com/github.com/abhinavgemawat/MetricsObservabilitySystem/api/collector"
+	"github.com/github.com/abhinavgemawat/MetricsObservabilitySystem/api/timeseriesdb"
 )
 
 func init() {
-	prometheus.MustRegister(cpuUsage)
-	prometheus.MustRegister(memoryUsage)
+	// Initialize InfluxDB
+	timeseriesdb.InitInfluxDB()
 }
 
 func scrapeMetrics() {
@@ -46,31 +35,24 @@ func scrapeMetrics() {
 		}
 
 		lines := strings.Split(string(body), "\n")
+		var cpuUsage, memoryUsage float64
 		for _, line := range lines {
 			if strings.HasPrefix(line, "cpu_usage") {
-				var value float64
-				_, err := fmt.Sscanf(line, "cpu_usage %f", &value)
-				if err == nil {
-					cpuUsage.Set(value)
-					fmt.Println("CPU: ", value)
+				_, err := fmt.Sscanf(line, "cpu_usage %f", &cpuUsage)
+				if err != nil {
+					log.Printf("Error parsing cpu_usage: %v", err)
 				}
 			} else if strings.HasPrefix(line, "memory_usage") {
-				var value float64
-				_, err := fmt.Sscanf(line, "memory_usage %f", &value)
-				if err == nil {
-					memoryUsage.Set(value)
-					fmt.Println("Mem: ", value)
+				_, err := fmt.Sscanf(line, "memory_usage %f", &memoryUsage)
+				if err != nil {
+					log.Printf("Error parsing memory_usage: %v", err)
 				}
 			}
 		}
 
+		// Write metrics to InfluxDB
+		collector.WriteMetrics(cpuUsage, memoryUsage)
+
 		time.Sleep(10 * time.Second)
 	}
-}
-
-func main() {
-	go scrapeMetrics()
-
-	http.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(":8080", nil))
 }

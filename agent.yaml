@@ -1,0 +1,10 @@
+metrics:
+  configs:
+    - name: default
+      scrape_configs:
+        - job_name: 'my_go_app'
+          static_configs:
+            - targets: ['localhost:5000']  # Your Go application's metrics endpoint
+
+      remote_write:
+        - url: 'http://<timeseries-db-endpoint>/api/v1/write'  # Replace with your time-series DB endpoint
