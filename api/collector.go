@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/github.com/abhinavgemawat/MetricsObservabilitySystem/api/timeseriesdb"
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 )
 

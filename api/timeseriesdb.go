@@ -12,8 +12,8 @@ const (
 )
 
 var (
-	Client   influxdb2.Client
-	WriteAPI influxdb2.WriteAPIBlocking
+	Client influxdb2.Client
+	// WriteAPI influxdb2.WriteAPIBlocking
 	// WriteAPI influxdb2.
 )
 
@@ -21,5 +21,5 @@ var (
 
 func InitInfluxDB() {
 	Client = influxdb2.NewClient(influxURL, influxToken)
-	WriteAPI = Client.WriteAPIBlocking(org, bucket)
+	// WriteAPI = Client.WriteAPIBlocking(org, bucket)
 }

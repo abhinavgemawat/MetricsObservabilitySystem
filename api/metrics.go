@@ -7,9 +7,6 @@ import (
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/github.com/abhinavgemawat/MetricsObservabilitySystem/api/collector"
-	"github.com/github.com/abhinavgemawat/MetricsObservabilitySystem/api/timeseriesdb"
 )
 
 func init() {
