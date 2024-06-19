@@ -14,7 +14,7 @@ func init() {
 	InitInfluxDB()
 }
 
-func scrapeMetrics() {
+func ScrapeMetrics() {
 	for {
 		resp, err := http.Get("http://localhost:5000/metrics")
 		if err != nil {
@@ -22,7 +22,7 @@ func scrapeMetrics() {
 			time.Sleep(10 * time.Second)
 			continue
 		}
-		defer resp.Body.Close()
+		// defer resp.Body.Close()
 
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
@@ -52,14 +52,4 @@ func scrapeMetrics() {
 
 		time.Sleep(10 * time.Second)
 	}
-}
-
-func main() {
-	go scrapeMetrics()
-
-	// Start the HTTP server (you can add more handlers if needed)
-	http.Handle("/metrics", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Metrics collection running"))
-	}))
-	log.Fatal(http.ListenAndServe(":8080", nil))
 }
