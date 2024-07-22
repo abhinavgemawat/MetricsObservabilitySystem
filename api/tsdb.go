@@ -2,7 +2,7 @@ package api
 
 import (
 	"context"
-	"time"
+	"fmt"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 )
@@ -15,28 +15,25 @@ const (
 	influxURL   = "http://localhost:8086"
 )
 
-var (
-	influxClient = influxdb2.NewClient(influxURL, influxToken)
-	writeAPI     = influxClient.WriteAPIBlocking(org, bucket)
-)
+func WriteMetricToInfluxDB(metric Metric) error {
+	client := influxdb2.NewClient(influxURL, influxToken)
+	defer client.Close()
 
-// Look into nonblocking
+	writeAPI := client.WriteAPIBlocking(org, bucket)
 
-func InitInfluxDB() {
-	influxClient = influxdb2.NewClient(influxURL, influxToken)
-	writeAPI = influxClient.WriteAPIBlocking(org, bucket)
-}
-
-func WriteMetrics(cpuUsage, memoryUsage float64) {
-	// // Create a point using the fluent API
-	p := influxdb2.NewPointWithMeasurement("system").
-		AddTag("location", "server1").
-		AddField("cpu_usage", cpuUsage).
-		AddField("memory_usage", memoryUsage).
-		SetTime(time.Now())
-	// // Write point to InfluxDB
-	err := writeAPI.WritePoint(context.Background(), p)
-	if err != nil {
-		panic(err)
+	tags := map[string]string{}
+	for k, v := range metric.Tags {
+		tags[k] = v
 	}
+
+	p := influxdb2.NewPoint(metric.Name,
+		tags,
+		map[string]interface{}{"value": metric.Value},
+		metric.Timestamp)
+
+	if err := writeAPI.WritePoint(context.Background(), p); err != nil {
+		return fmt.Errorf("failed to write metric to InfluxDB: %v", err)
+	}
+
+	return nil
 }
