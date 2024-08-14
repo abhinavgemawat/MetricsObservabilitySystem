@@ -52,7 +52,6 @@ func ScrapeMetrics(metrics *[]Metric) {
 			time.Sleep(10 * time.Second)
 			continue
 		}
-		defer resp.Body.Close()
 
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
