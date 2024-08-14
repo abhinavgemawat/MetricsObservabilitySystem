@@ -1,30 +1,59 @@
-version: '3.1'
+version: '3.8'
 
 services:
-  influxdb:
-    image: influxdb:1.8
+  go-app:
+    build: .
     ports:
-      - "8087:8086"
-    environment:
-      - INFLUXDB_DB=my_metrics
-      - INFLUXDB_ADMIN_USER=admin
-      - INFLUXDB_ADMIN_PASSWORD=admin_password
-      - INFLUXDB_USER=my_user
-      - INFLUXDB_USER_PASSWORD=my_password
-    volumes:
-      - influxdb-data:/var/lib/influxdb
-
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3001:3000"
-    volumes:
-      - grafana-data:/var/lib/grafana
+      - "8080:8080"
     depends_on:
+      - kafka
       - influxdb
 
+  kafka:
+    image: wurstmeister/kafka:2.13-2.7.0
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    ports:
+      - "2181:2181"
+
+  influxdb:
+    image: influxdb:latest
+    environment:
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=abhinavgemawat
+      - DOCKER_INFLUXDB_INIT_PASSWORD=comp41720
+      - DOCKER_INFLUXDB_INIT_ORG=COMP41720
+      - DOCKER_INFLUXDB_INIT_BUCKET=metrics
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=EACoZofK2hqaXSA4vUNwNDB8mdEx1Jh47LY62YXMT9lp1fjniM-gqBhEhy8SAcsbZb55mtNWrsm038CUApj8Fw==
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    ports:
+      - 8086:8086
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=comp41720
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
 volumes:
+  grafana-storage:
   influxdb-data:
   grafana-data:
-
-

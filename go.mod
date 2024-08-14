@@ -1,6 +1,6 @@
 module github.com/abhinavgemawat/MetricsObservabilitySystem/api
 
-go 1.22.3
+go 1.19
 
 require (
 	github.com/influxdata/influxdb-client-go/v2 v2.13.0
@@ -10,7 +10,6 @@ require (
 require (
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/stretchr/objx v0.5.2 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

@@ -9,7 +9,7 @@ import (
 
 const (
 	// oCB_0br7Ev6M16YeMowICZaToJECOb94sSPaKSsnk9xgYOhJVhK9y7sag-fWaeXv50vzX2ej86sII0vns_HlFQ==
-	influxToken = "oCB_0br7Ev6M16YeMowICZaToJECOb94sSPaKSsnk9xgYOhJVhK9y7sag-fWaeXv50vzX2ej86sII0vns_HlFQ=="
+	influxToken = "EACoZofK2hqaXSA4vUNwNDB8mdEx1Jh47LY62YXMT9lp1fjniM-gqBhEhy8SAcsbZb55mtNWrsm038CUApj8Fw=="
 	bucket      = "metrics"
 	org         = "COMP41720"
 	influxURL   = "http://localhost:8086"
