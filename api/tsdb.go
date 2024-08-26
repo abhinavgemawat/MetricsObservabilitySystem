@@ -3,19 +3,21 @@ package api
 import (
 	"context"
 	"fmt"
+	"os"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 )
 
+var influxToken = os.Getenv("INFLUXDB_TOKEN")
+
 const (
-	// oCB_0br7Ev6M16YeMowICZaToJECOb94sSPaKSsnk9xgYOhJVhK9y7sag-fWaeXv50vzX2ej86sII0vns_HlFQ==
-	influxToken = "EACoZofK2hqaXSA4vUNwNDB8mdEx1Jh47LY62YXMT9lp1fjniM-gqBhEhy8SAcsbZb55mtNWrsm038CUApj8Fw=="
-	bucket      = "metrics"
-	org         = "COMP41720"
-	influxURL   = "http://localhost:8086"
+	bucket    = "metrics"
+	org       = "COMP41720"
+	influxURL = "http://localhost:8086"
 )
 
 func WriteMetricToInfluxDB(metric Metric) error {
+	fmt.Println("InfluxDB token:", influxToken)
 	client := influxdb2.NewClient(influxURL, influxToken)
 	defer client.Close()
 
