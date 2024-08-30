@@ -37,13 +37,7 @@ func DeserializeMetric(data string) (*Metric, error) {
 	return &metric, nil
 }
 
-// latency
-// average downtime per week
-// traffic
-// what percentage of time are the servers 80%/50%/20% of the load
-// Additional - dashboard
-
-// / ScrapeMetrics fetches and parses metrics, storing them in the provided Metrics slice
+// ScrapeMetrics fetches and parses metrics, storing them in the provided Metrics slice
 func ScrapeMetrics(metrics *[]Metric) {
 	for {
 		resp, err := http.Get("http://localhost:5000/metrics")
